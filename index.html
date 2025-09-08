@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Card Game</title>
+    <title>Memory Match - Dark Theme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -13,31 +14,40 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            color: #333;
+            color: #f0f0f0;
         }
         
         .container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background: rgba(15, 52, 96, 0.7);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             padding: 25px;
             max-width: 800px;
             width: 100%;
             text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(233, 69, 96, 0.3);
         }
         
         h1 {
-            color: #6e8efb;
+            color: #e94560;
             margin-bottom: 15px;
             font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .description {
+            color: #a9bcd0;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
         }
         
         .game-info {
@@ -48,12 +58,13 @@
             font-weight: bold;
         }
         
-        .moves, .timer {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: white;
+        .moves, .timer, .score {
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
             padding: 10px 20px;
             border-radius: 50px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(233, 69, 96, 0.3);
         }
         
         .game-board {
@@ -66,7 +77,7 @@
         
         .card {
             height: 100px;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
             border-radius: 8px;
             cursor: pointer;
             display: flex;
@@ -75,11 +86,17 @@
             font-size: 2rem;
             transform-style: preserve-3d;
             transition: transform 0.5s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(233, 69, 96, 0.2);
         }
         
         .card.flipped {
             transform: rotateY(180deg);
+        }
+        
+        .card.matched {
+            border-color: #4cc9f0;
+            box-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
         }
         
         .card-front, .card-back {
@@ -94,21 +111,29 @@
         }
         
         .card-front {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #e94560 0%, #b91d44 100%);
             transform: rotateY(180deg);
+            color: white;
         }
         
         .card-back {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: transparent;
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            color: #e94560;
+        }
+        
+        .card-back i {
+            font-size: 2.2rem;
         }
         
         .controls {
             margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
         
         button {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #e94560 0%, #b91d44 100%);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -116,13 +141,44 @@
             cursor: pointer;
             font-size: 1.1rem;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .theme-selector {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .theme-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-blue {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #e94560);
+        }
+        
+        .theme-teal {
+            background: linear-gradient(135deg, #0d1b1e, #1e3a3f, #4c8577, #a6ece0);
+        }
+        
+        .theme-warm {
+            background: linear-gradient(135deg, #1e1e24, #2d2d3a, #4c3b4d, #c9a690);
         }
         
         .win-message {
@@ -132,7 +188,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.9);
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -141,21 +197,38 @@
         }
         
         .win-content {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
             padding: 40px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #e94560;
+            max-width: 90%;
+            width: 500px;
         }
         
         .win-content h2 {
             font-size: 2.5rem;
             margin-bottom: 20px;
+            color: #e94560;
         }
         
         .win-content p {
             font-size: 1.2rem;
             margin-bottom: 25px;
+            color: #a9bcd0;
+        }
+        
+        .difficulty {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .difficulty-btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
         }
         
         @media (max-width: 500px) {
@@ -170,30 +243,67 @@
             h1 {
                 font-size: 2rem;
             }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+        
+        /* Animation for matched cards */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .matched {
+            animation: pulse 0.5s ease-in-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Memory Match</h1>
+        <h1><i class="fas fa-brain"></i> Memory Match</h1>
+        
+        <p class="description">Flip cards to find matching pairs. Try to complete the game with the fewest moves and shortest time!</p>
         
         <div class="game-info">
-            <div class="moves">Moves: <span id="moves-count">0</span></div>
-            <div class="timer">Time: <span id="time">0</span>s</div>
+            <div class="moves"><i class="fas fa-sync-alt"></i> Moves: <span id="moves-count">0</span></div>
+            <div class="timer"><i class="fas fa-clock"></i> Time: <span id="time">0</span>s</div>
+            <div class="score"><i class="fas fa-star"></i> Score: <span id="score">0</span></div>
+        </div>
+        
+        <div class="difficulty">
+            <button class="difficulty-btn" data-size="4">Easy (4×4)</button>
+            <button class="difficulty-btn" data-size="6">Medium (6×6)</button>
         </div>
         
         <div class="game-board" id="game-board"></div>
         
         <div class="controls">
-            <button id="restart-btn">Restart Game</button>
+            <button id="restart-btn"><i class="fas fa-redo"></i> Restart Game</button>
+            <button id="hint-btn"><i class="fas fa-lightbulb"></i> Hint</button>
+        </div>
+        
+        <div class="theme-selector">
+            <div class="theme-btn theme-blue" title="Blue/Purple Theme"></div>
+            <div class="theme-btn theme-teal" title="Teal/Green Theme"></div>
+            <div class="theme-btn theme-warm" title="Warm Dark Theme"></div>
         </div>
     </div>
     
     <div class="win-message" id="win-message">
         <div class="win-content">
-            <h2>Congratulations!</h2>
+            <h2>Congratulations! <i class="fas fa-trophy"></i></h2>
             <p>You found all matches in <span id="final-moves"></span> moves and <span id="final-time"></span> seconds!</p>
-            <button id="play-again">Play Again</button>
+            <p>Your final score: <span id="final-score"></span></p>
+            <button id="play-again"><i class="fas fa-play"></i> Play Again</button>
         </div>
     </div>
 
@@ -202,11 +312,16 @@
             const gameBoard = document.getElementById('game-board');
             const movesCount = document.getElementById('moves-count');
             const timeDisplay = document.getElementById('time');
+            const scoreDisplay = document.getElementById('score');
             const restartBtn = document.getElementById('restart-btn');
+            const hintBtn = document.getElementById('hint-btn');
             const winMessage = document.getElementById('win-message');
             const finalMoves = document.getElementById('final-moves');
             const finalTime = document.getElementById('final-time');
+            const finalScore = document.getElementById('final-score');
             const playAgainBtn = document.getElementById('play-again');
+            const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+            const themeButtons = document.querySelectorAll('.theme-btn');
             
             let cards = [];
             let hasFlippedCard = false;
@@ -216,9 +331,12 @@
             let matchedPairs = 0;
             let timer = 0;
             let timerInterval;
+            let score = 0;
+            let boardSize = 4; // 4x4 grid by default
+            let hintsAvailable = 3;
             
             // Emoji symbols for the cards
-            const cardSymbols = ['🍕', '🚀', '🌟', '🐱', '🦄', '🌎', '🍦', '🎮'];
+            const cardSymbols = ['🍕', '🚀', '🌟', '🐱', '🦄', '🌎', '🍦', '🎮', '🎸', '🏆', '🌙', '⚡'];
             
             // Initialize game
             function initGame() {
@@ -226,13 +344,25 @@
                 moves = 0;
                 matchedPairs = 0;
                 timer = 0;
+                score = 1000; // Starting score
                 movesCount.textContent = moves;
                 timeDisplay.textContent = timer;
+                scoreDisplay.textContent = score;
                 cards = [];
                 gameBoard.innerHTML = '';
                 
+                // Set grid based on boardSize
+                gameBoard.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+                
+                // Calculate number of cards needed
+                const totalCards = boardSize * boardSize;
+                const symbolsNeeded = totalCards / 2;
+                
+                // Get symbols for this game
+                const gameSymbols = cardSymbols.slice(0, symbolsNeeded);
+                
                 // Create pairs of cards
-                const gameCards = [...cardSymbols, ...cardSymbols];
+                const gameCards = [...gameSymbols, ...gameSymbols];
                 
                 // Shuffle cards
                 shuffleArray(gameCards);
@@ -249,7 +379,9 @@
                     
                     const cardBack = document.createElement('div');
                     cardBack.classList.add('card-back');
-                    cardBack.textContent = '?';
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-question';
+                    cardBack.appendChild(icon);
                     
                     card.appendChild(cardFront);
                     card.appendChild(cardBack);
@@ -263,6 +395,12 @@
                 timerInterval = setInterval(() => {
                     timer++;
                     timeDisplay.textContent = timer;
+                    
+                    // Reduce score over time
+                    if (timer % 5 === 0 && score > 0) {
+                        score -= 10;
+                        scoreDisplay.textContent = score;
+                    }
                 }, 1000);
             }
             
@@ -279,6 +417,7 @@
             function flipCard() {
                 if (lockBoard) return;
                 if (this === firstCard) return;
+                if (this.classList.contains('matched')) return;
                 
                 this.classList.add('flipped');
                 
@@ -294,6 +433,11 @@
                 moves++;
                 movesCount.textContent = moves;
                 
+                // Reduce score for each move
+                score -= 5;
+                if (score < 0) score = 0;
+                scoreDisplay.textContent = score;
+                
                 checkForMatch();
             }
             
@@ -305,9 +449,17 @@
                     disableCards();
                     matchedPairs++;
                     
+                    // Add bonus for match
+                    score += 20;
+                    scoreDisplay.textContent = score;
+                    
                     // Check if all pairs are matched
-                    if (matchedPairs === cardSymbols.length) {
+                    if (matchedPairs === (boardSize * boardSize / 2)) {
                         clearInterval(timerInterval);
+                        // Add time bonus
+                        score += Math.max(0, 500 - (timer * 5));
+                        scoreDisplay.textContent = score;
+                        
                         setTimeout(() => {
                             showWinMessage();
                         }, 1000);
@@ -319,6 +471,9 @@
             
             // Disable matched cards
             function disableCards() {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+                
                 firstCard.removeEventListener('click', flipCard);
                 secondCard.removeEventListener('click', flipCard);
                 
@@ -347,14 +502,110 @@
             function showWinMessage() {
                 finalMoves.textContent = moves;
                 finalTime.textContent = timer;
+                finalScore.textContent = score;
                 winMessage.style.display = 'flex';
+            }
+            
+            // Provide hint to player
+            function provideHint() {
+                if (hintsAvailable <= 0) return;
+                
+                // Find all unflipped, unmatched cards
+                const unflippedCards = cards.filter(card => 
+                    !card.classList.contains('flipped') && 
+                    !card.classList.contains('matched')
+                );
+                
+                if (unflippedCards.length < 2) return;
+                
+                // Find a matching pair
+                let matchFound = false;
+                for (let i = 0; i < unflippedCards.length - 1 && !matchFound; i++) {
+                    for (let j = i + 1; j < unflippedCards.length && !matchFound; j++) {
+                        if (unflippedCards[i].dataset.symbol === unflippedCards[j].dataset.symbol) {
+                            // Briefly show the hint
+                            unflippedCards[i].classList.add('flipped');
+                            unflippedCards[j].classList.add('flipped');
+                            
+                            setTimeout(() => {
+                                unflippedCards[i].classList.remove('flipped');
+                                unflippedCards[j].classList.remove('flipped');
+                            }, 1000);
+                            
+                            matchFound = true;
+                            hintsAvailable--;
+                            hintBtn.textContent = `Hint (${hintsAvailable})`;
+                            
+                            // Reduce score for using hint
+                            score -= 50;
+                            if (score < 0) score = 0;
+                            scoreDisplay.textContent = score;
+                        }
+                    }
+                }
+            }
+            
+            // Change theme
+            function changeTheme(theme) {
+                if (theme === 'teal') {
+                    document.body.style.background = 'linear-gradient(135deg, #0d1b1e 0%, #1e3a3f 100%)';
+                    document.querySelector('.container').style.background = 'rgba(76, 133, 119, 0.3)';
+                    document.querySelector('.container').style.borderColor = 'rgba(166, 236, 224, 0.3)';
+                    updateTextColors('#a6ece0', '#4c8577');
+                } else if (theme === 'warm') {
+                    document.body.style.background = 'linear-gradient(135deg, #1e1e24 0%, #2d2d3a 100%)';
+                    document.querySelector('.container').style.background = 'rgba(76, 59, 77, 0.3)';
+                    document.querySelector('.container').style.borderColor = 'rgba(201, 166, 144, 0.3)';
+                    updateTextColors('#c9a690', '#4c3b4d');
+                } else {
+                    // Default blue theme
+                    document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                    document.querySelector('.container').style.background = 'rgba(15, 52, 96, 0.7)';
+                    document.querySelector('.container').style.borderColor = 'rgba(233, 69, 96, 0.3)';
+                    updateTextColors('#e94560', '#0f3460');
+                }
+            }
+            
+            // Update text colors for theme
+            function updateTextColors(primary, secondary) {
+                document.querySelectorAll('h1, .moves, .timer, .score').forEach(el => {
+                    el.style.color = primary;
+                });
+                
+                document.querySelectorAll('.card-front').forEach(el => {
+                    el.style.background = `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`;
+                });
+                
+                document.querySelectorAll('button').forEach(el => {
+                    el.style.background = `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`;
+                });
             }
             
             // Event listeners
             restartBtn.addEventListener('click', initGame);
+            hintBtn.addEventListener('click', provideHint);
             playAgainBtn.addEventListener('click', () => {
                 winMessage.style.display = 'none';
+                hintsAvailable = 3;
+                hintBtn.textContent = `Hint (${hintsAvailable})`;
                 initGame();
+            });
+            
+            difficultyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    boardSize = parseInt(button.dataset.size);
+                    hintsAvailable = 3;
+                    hintBtn.textContent = `Hint (${hintsAvailable})`;
+                    initGame();
+                });
+            });
+            
+            themeButtons.forEach((button, index) => {
+                button.addEventListener('click', () => {
+                    if (index === 0) changeTheme('blue');
+                    else if (index === 1) changeTheme('teal');
+                    else changeTheme('warm');
+                });
             });
             
             // Start the game
